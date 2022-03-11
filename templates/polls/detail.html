@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+    설문 항목
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>설문 항목</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div id="container">
+        <section>
+            <form action="{% url 'polls:vote' question.id %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <legend>{{ question.question_text }}</legend>
+                    {% if error %}
+                        <p class="error">{{ error }}</p>
+                    {% endif %}
+                    {% for choice in question.choice_set.all %}
+                    <p>
+                        <input type="radio" name="choice" value="{{ choice.id }}">
+                        <label>{{ choice.choice_text }}</label>
+                    </p>
+                    {% endfor %}
+                </fieldset>
+                <p><input type="submit" value="투표"></p>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
+{% endblock %}

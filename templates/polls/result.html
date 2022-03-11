@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    투표 결과
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>투표 결과</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div id="container">
+        <section>
+            <h2>{{ question.question_text }}</h2>
+            <ul>
+                {% for choice in question.choice_set.all %}
+                <li>
+                    {{ choice.choice_text }} -- {{ choice.votes }}votes
+                </li>
+                {% endfor %}
+            </ul>
+            <p><button type="button" onclick="location.href='/polls/' ">설문 목록</button> </p>
+        </section>
+
+    </div>
+</body>
+</html>
+{% endblock %}

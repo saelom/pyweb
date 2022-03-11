@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Welcome~ PyWeb!!
+{% endblock %}
+
+{% block content %}
+ <div class="container">
+
+    <!-- Carousel 사용 -->
+      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+         <div class="carousel-inner">
+          <div class="carousel-item active">
+              <img src="{% static 'board/images/bg0.jpg' %}" class="d-block w-100" alt="...">
+         </div>
+         <div class="carousel-item">
+          <img src="{% static 'board/images/bg1.jpg' %}" class="d-block w-100" alt="...">
+         </div>
+         <div class="carousel-item">
+          <img src="{% static 'board/images/bg2.jpg' %}" class="d-block w-100" alt="...">
+         </div>
+         </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      </div>
+
+
+
+ <!--   <div class="jumbotron">
+        <h1 class="text-center">어서오세요~ 무엇이든 물어보세요!!</h1>
+        <img src="../static/polls/image2.JPG/" >
+    </div>
+  -->
+    <div class="row">
+      <!-- 배경 사진 전환 -->
+      <!-- <div class="card mb-4">
+        <img src="{% static 'board/images/bg0.jpg' %}" id="pic">
+      </div>  -->
+
+
+        <div class="col-6 p-5">
+            <h3 class="mt-4">무엇이든지 물어보세요</h3>
+            <div class="card" >
+            <div class="card-body">
+               <p>질문/답변 게시판을 사용해보세요.</p>
+               <p>댓글과 추천기능을 사용해보세요</p>
+               <a href="{% url 'board:boardlist' %}" class="btn btn-info">질문/답변 &rarr;</a>
+            </div>
+            </div>
+
+
+        <h3 class="mt-4">설문 투표</h3>
+            <div class="card my-3" >
+            <div class="card-body">
+               <p>설문에 투표해보세요</p>
+               <a href="{% url 'polls:index' %}" class="btn btn-danger">투표하기 &rarr;</a>
+            </div>
+            </div>
+        </div>
+        <!-- 최신 질문 -->
+          <div class="col-6 p-5">
+            <h3 class="mt-4">Question - 최근 질문 </h3>
+             {% for question in question_list %}
+              <div class="card mb-3">
+                <div class="card-body p-2">
+                <p>
+                    <a href="{% url 'board:detail' question.id %}"
+                    class="text-decoration-none">
+                         {{ question.subject }}
+                    </a>
+                </p>
+                    <div class="card-text text-right">
+                     <span class="badge text-dark text-right">
+                         {{ question.author }} &nbsp; &nbsp; (작성일 : {{ question.create_date }})
+                     </span>
+                    </div>
+                  </div>
+                </div>
+               {% endfor %}
+               </div>
+           </div>
+     </div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    let picture = ["/static/board/images/bg0.jpg","/static/board/images/bg1.jpg",
+                   "/static/board/images/bg2.jpg" ];
+    let pic_idx = 0
+
+    showPicture();  // 콜백함수
+
+    function showPicture(){
+     let img = document.getElementById('pic')
+     img.src = picture[pic_idx];   //0번 인덱스 이미지 저장
+     pic_idx += 1;   //1 증가
+     if(pic_idx ==3){
+      pic_idx = 0;}
+
+     setTimeout(showPicture,2000);  //2초 설정
+
+    }
+</script>
+{% endblock %}
+
+
+
+
+    <!-- Carousel 사용 -->
+    <!--   <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+     <div class="carousel-inner">
+     <div class="carousel-item active">
+     <img src="{% static 'board/images/bg0.jpg' %}" class="d-block w-100" alt="배경사진1">
+     </div>
+     <div class="carousel-item">
+     <img src="{% static 'board/images/bg1.jpg' %}" class="d-block w-100" alt="배경사진2">
+     </div>
+     <div class="carousel-item">
+     <img src="{% static 'board/images/bg2.jpg' %}" class="d-block w-100" alt="배경사진3">
+     </div>
+     </div>  -->
