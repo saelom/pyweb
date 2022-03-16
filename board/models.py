@@ -31,7 +31,8 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # 외래키 - 댓글 글쓴이
     question = models.ForeignKey(Question, null=True, blank=True,
                                  on_delete=models.CASCADE)  # 댓글이 달린 질문
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE) # 댓글이 달린 답변
+    answer = models.ForeignKey(Answer, null=True, blank=True,
+                               on_delete=models.CASCADE) # 댓글이 달린 답변
 
     def __str__(self):
         return self.content

@@ -7,7 +7,6 @@ from django.utils import timezone
 from board.models import Question, Answer
 from board.forms import QuestionForm, AnswerForm
 
-
 def index(request):
     #인덱스 페이지
     question_list = Question.objects.order_by('-pk')[:3]
@@ -20,8 +19,8 @@ def boardlist(request):
     # question_list = Question.objects.all()  #db에서 전체 검색
 
     # 페이징 처리
-    page= request.GET.get('page','1')  # 페이지
-    paginator = Paginator(question_list, 10)  # 페이지당 10개 자료
+    page = request.GET.get('page', '1')  #페이지
+    paginator = Paginator(question_list, 10)  #페이지당 10개 자료
     page_obj = paginator.get_page(page)
     context = {'question_list':page_obj}
     return render(request, 'board/question_list.html', context)
@@ -41,10 +40,10 @@ def question_create(request):
         form = QuestionForm(request.POST)  # 내용이 작성된 폼
         if form.is_valid():
             question = form.save(commit=False)  #가저장
-            question.create_date = timezone.now() #작성일
-            question.author = request.user  # 인증된 사용자(글쓴이)
+            question.create_date = timezone.now()  #작성일
+            question.author = request.user  #인증된 사용자(글쓴이)
             question.save()  #실제 저장(db에 저장)
-            return redirect('board:index')  # 질문 목록 페이지 강제 이동
+            return redirect('board:boardlist')  # 질문 목록 페이지 강제 이동
     else: #request.method == "GET":
         form = QuestionForm()  #질문 등록 폼 객체 변수 생성(비어있는 폼)
     context = {'form':form}
@@ -61,9 +60,10 @@ def answer_create(request, question_id):
             answer = form.save(commit=False)
             answer.create_date = timezone.now()
             answer.question = question
-            answer.author = request.user
+            answer.author = request.user   #인증된 사용자(글쓴이)
             answer.save()
             return redirect('board:detail', question_id=question_id)
+            # return render(request, 'board:detail.html', question_id=question_id)
     else:
         form = AnswerForm()   # 비어있는 폼
     context = {'question':question, 'form':form}
@@ -72,62 +72,63 @@ def answer_create(request, question_id):
 @login_required(login_url='common:login_view')
 def question_modify(request, question_id):
     # 질문 수정
-    #question = Question.objects.get(id=question_id)
     question = get_object_or_404(Question, pk=question_id)
+    # question = Question.objects.get(id=question_id)
     if request.method == "POST":
-        form = QuestionForm(request.POST, instance=question)  # 새로 작성한 폼
+        form = QuestionForm(request.POST, instance=question)  #새로 작성한 폼
         if form.is_valid():
-           question = form.save(commit=False)      # 가저장
-           question.modify_date = timezone.now()   # 수정일
-           question.author = request.user          # 글쓴이
-           question.save()                         # db에 저장
-           return redirect('board:detail', question_id=question_id)
+            question = form.save(commit=False)     #가저장
+            question.modify_date = timezone.now()  # 수정일
+            question.author = request.user         # 글쓴이
+            question.save()                        # db에 저장
+            return redirect('board:detail', question_id=question_id)
     else:
-        form = QuestionForm(instance=question)  # 이미 작성된 폼
-    context = { 'form':form}
+        form = QuestionForm(instance=question)    #이미 작성된 폼
+    context = {'form':form}
     return render(request, 'board/question_form.html', context)
 
 @login_required(login_url='common:login_view')
 def answer_modify(request, answer_id):
     #답변 수정
     answer = get_object_or_404(Answer, pk=answer_id)
-    #answer = Answer.objects.get(id=answer_id)
+    # answer = Answer.objects.get(id=answer_id)
     if request.method == "POST":
-      form = AnswerForm(request.POST, instance=answer)
-      if form.is_valid():
-          answer = form.save(commit=False)
-          answer.modify_date = timezone.now()
-          answer.author = request.user
-          answer.save()         #db에 저장
-          return redirect('board:detail',question_id = answer.question.id)
+        form = AnswerForm(request.POST, instance=answer)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.modify_date = timezone.now()
+            answer.author = request.user
+            answer.save()   #db에 저장
+            return redirect('board:detail', question_id = answer.question.id)
     else:
-      form = AnswerForm(instance=answer)   # 수정할 답변 폼
+        form = AnswerForm(instance=answer)   # 수정할 답변 폼
     context = {'form':form}
     return render(request, 'board/answer_form.html', context)
 
 @login_required(login_url='common:login_view')
-def question_delete(request,question_id):
-    # 질문 삭제
-    #question = Question.objects.get(id=question_id)
+def question_delete(request, question_id):
+    #질문 삭제
     question = get_object_or_404(Question, pk=question_id)
-    question.delete()   # 해당 질문 삭제
+    # question = Question.objects.get(id=question_id)
+    question.delete()     #해당 질문 삭제
     return redirect('board:boardlist')  # 질문 목록
 
 @login_required(login_url='common:login_view')
 def answer_delete(request, answer_id):
     # 답변 삭제
-    answer = get_object_or_404(Answer,pk=answer_id)
-    #answer = Answer.objects.get(id=answer_id)
+    answer = get_object_or_404(Answer, pk=answer_id)
+    # answer = Answer.objects.get(id=answer_id)
     answer.delete()
     return redirect('board:detail', question_id=answer.question.id)  # 상세페이지
 
 @login_required(login_url='common:login_view')
 def vote_question(request, question_id):
     # 질문 추천
-    question = Question.objects.get(id=question_id)
+    # question = Question.objects.get(id=question_id)
+    question = get_object_or_404(Question, pk=question_id)
     if request.user == question.author:
         messages.error(request, "본인이 작성한 글은 추천할 수 없습니다.")
     else:
-        question.voter.add(request.user)        # 추천 1 증가
+        question.voter.add(request.user)   #추천 1 증가
     return redirect('board:detail', question_id=question_id)
 
